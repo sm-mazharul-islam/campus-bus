@@ -4,21 +4,15 @@ import React, { useState, useEffect } from "react";
 import {
   Navigation,
   Compass,
-  ArrowRight,
   ShieldAlert,
-  Users,
   Play,
   Pause,
   RotateCcw,
   Sparkles,
-  User,
   LogOut,
-  QrCode,
-  CheckCircle,
 } from "lucide-react";
 import { getBuses, updateBusLocation } from "@/actions/buses";
 import { getRoutes } from "@/actions/routes";
-import { recordBoarding } from "@/actions/boarding";
 import { createNotification } from "@/actions/notifications";
 import { logoutUser } from "@/actions/auth";
 import BusMap from "../map/bus-map";
@@ -42,10 +36,6 @@ export default function DriverDashboard({ user }: DriverDashboardProps) {
   const [currentStopIndex, setCurrentStopIndex] = useState(0);
   const [speedMultiplier, setSpeedMultiplier] = useState(1);
   const [steeringAngle, setSteeringAngle] = useState(0);
-  
-  // Passenger Boarding Scan Simulator
-  const [boardingStudentId, setBoardingStudentId] = useState("");
-  const [boardingMessage, setBoardingMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // Fetch driver's assigned bus and route data
   useEffect(() => {
@@ -123,29 +113,6 @@ export default function DriverDashboard({ user }: DriverDashboardProps) {
     alert("🚨 Emergency SOS alert broadcasted successfully to all students!");
   };
 
-  const handleBoardingSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!boardingStudentId.trim() || !myBus) return;
-
-    setBoardingMessage(null);
-    const res = await recordBoarding(boardingStudentId, myBus.busNumber);
-
-    if (res.success) {
-      setBoardingMessage({
-        type: "success",
-        text: `Check-in Successful! Student: ${res.record?.studentName || boardingStudentId} boarded ${myBus.busNumber}`,
-      });
-      setBoardingStudentId("");
-    } else {
-      setBoardingMessage({
-        type: "error",
-        text: res.error || "Failed to record boarding check-in.",
-      });
-    }
-
-    setTimeout(() => setBoardingMessage(null), 5000);
-  };
-
   const handleLogout = async () => {
     await logoutUser();
     window.location.reload();
@@ -156,7 +123,7 @@ export default function DriverDashboard({ user }: DriverDashboardProps) {
       {/* Header bar */}
       <header className="glass-panel border-b border-[#D4AF37]/15 px-6 py-4 sticky top-0 z-50 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="bg-[#003087] p-2 rounded-xl border border-[#D4AF37]/30 shadow-lg">
+          <div className="bg-[#003087] p-2 rounded-xl border border-[#D4AF37]/30 shadow-lg animate-pulse-glow">
             <Compass className="h-6 w-6 text-[#D4AF37] animate-spin-slow" />
           </div>
           <div>
@@ -319,53 +286,27 @@ export default function DriverDashboard({ user }: DriverDashboardProps) {
           />
         </div>
 
-        {/* Right Column: Boarding scan check-in console & Emergency */}
+        {/* Right Column: Emergency & Google Maps Live redirection */}
         <div className="lg:col-span-1 flex flex-col gap-6">
-          {/* Passenger Boarding QR Check-in */}
-          <div className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col gap-4">
+          {/* Google Maps Live Link Panel */}
+          <div className="glass-panel p-6 rounded-2xl border border-[#D4AF37]/20 flex flex-col gap-4">
             <div>
               <h3 className="font-bold text-white text-base flex items-center gap-2">
-                <QrCode className="h-4.5 w-4.5 text-[#D4AF37]" />
-                <span>QR boarding scanner</span>
+                <Compass className="h-4.5 w-4.5 text-[#D4AF37]" />
+                <span>Google Maps Redirection</span>
               </h3>
-              <p className="text-[10px] text-slate-400 mt-0.5">Type or scan a Student ID card to record boarding attendance</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">Click the link below to verify your simulated live GPS coordinates directly on real-world Google Maps satellite views.</p>
             </div>
 
-            <form onSubmit={handleBoardingSubmit} className="flex flex-col gap-3">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
-                  Passenger ID Input
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. CSE-2022-045"
-                  value={boardingStudentId}
-                  onChange={(e) => setBoardingStudentId(e.target.value)}
-                  className="bg-slate-950/60 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-[#D4AF37]/50"
-                  required
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-[#003087] hover:bg-[#00205c] border border-[#D4AF37]/35 text-white py-2.5 rounded-xl text-xs font-bold transition-all duration-300 shadow-md flex items-center justify-center gap-1.5"
+            {myBus && (
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${myBus.currentLat},${myBus.currentLng}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-emerald-500/10 hover:bg-emerald-500/25 border border-emerald-500/35 text-emerald-400 py-3.5 rounded-xl text-xs font-bold transition-all duration-300 shadow-md flex items-center justify-center gap-1.5 animate-pulse-glow"
               >
-                <CheckCircle className="h-4 w-4 text-[#D4AF37]" />
-                <span>Confirm Passenger check-in</span>
-              </button>
-            </form>
-
-            {boardingMessage && (
-              <div
-                className={`p-3 rounded-xl border text-xs flex items-center gap-2 animate-fade-in ${
-                  boardingMessage.type === "success"
-                    ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-                    : "bg-red-500/10 border-red-500/20 text-red-400"
-                }`}
-              >
-                <Users className="h-4 w-4 shrink-0" />
-                <span>{boardingMessage.text}</span>
-              </div>
+                🌎 Open Live GPS on Google Maps
+              </a>
             )}
           </div>
 

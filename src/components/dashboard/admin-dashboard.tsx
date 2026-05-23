@@ -4,18 +4,15 @@ import React, { useState, useEffect } from "react";
 import {
   Compass,
   Bus,
-  Map,
-  Users,
-  Bell,
-  Trash2,
-  Plus,
-  TrendingUp,
-  Settings,
-  LogOut,
   MapPin,
   CheckCircle,
-  Activity,
   AlertTriangle,
+  Activity,
+  Plus,
+  Trash2,
+  Bell,
+  Settings,
+  LogOut,
 } from "lucide-react";
 import {
   BarChart,
@@ -30,7 +27,6 @@ import {
 } from "recharts";
 import { getBuses, createBus, updateBus, deleteBus } from "@/actions/buses";
 import { getRoutes, createRoute, updateRoute, deleteRoute } from "@/actions/routes";
-import { getBoardingRecords } from "@/actions/boarding";
 import { createNotification } from "@/actions/notifications";
 import { logoutUser } from "@/actions/auth";
 import BusMap from "../map/bus-map";
@@ -47,7 +43,6 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
   const [activeSubTab, setActiveSubTab] = useState<"overview" | "buses" | "routes" | "notifications">("overview");
   const [buses, setBuses] = useState<any[]>([]);
   const [routes, setRoutes] = useState<any[]>([]);
-  const [boardingRecords, setBoardingRecords] = useState<any[]>([]);
 
   // Bus form states
   const [newBusNumber, setNewBusNumber] = useState("");
@@ -68,14 +63,15 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
   // Poll database state
   useEffect(() => {
     async function fetchData() {
-      const busData = await getBuses();
-      setBuses(busData);
+      try {
+        const busData = await getBuses();
+        setBuses(busData);
 
-      const routeData = await getRoutes();
-      setRoutes(routeData);
-
-      const recordData = await getBoardingRecords();
-      setBoardingRecords(recordData);
+        const routeData = await getRoutes();
+        setRoutes(routeData);
+      } catch (e) {
+        console.error(e);
+      }
     }
     fetchData();
     const interval = setInterval(fetchData, 4000);
@@ -183,27 +179,27 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
   // Recharts Chart Data Processing
   const activeBusesCount = buses.filter((b) => b.status === "ACTIVE").length;
   const maintenanceCount = buses.filter((b) => b.status === "MAINTENANCE").length;
+  const inactiveBusesCount = buses.filter((b) => b.status === "INACTIVE").length;
 
-  const ridershipData = [
-    { name: "Nathullabad", count: boardingRecords.filter((b) => b.busNumber === "Bus 12").length },
-    { name: "Rupatali", count: boardingRecords.filter((b) => b.busNumber === "Bus 07").length },
-    { name: "Special Route", count: boardingRecords.filter((b) => b.busNumber !== "Bus 12" && b.busNumber !== "Bus 07").length },
+  const totalStopsCount = routes.reduce((acc, r) => acc + JSON.parse(r.stops).length, 0);
+
+  const fleetStatusData = [
+    { name: "Active", count: activeBusesCount },
+    { name: "Inactive", count: inactiveBusesCount },
+    { name: "Maintenance", count: maintenanceCount }
   ];
 
-  const trendData = [
-    { hour: "08:00 AM", riders: 120 },
-    { hour: "10:00 AM", riders: 45 },
-    { hour: "02:00 PM", riders: 85 },
-    { hour: "05:00 PM", riders: 150 },
-    { hour: "06:00 PM", riders: 75 },
-  ];
+  const routeStopsData = routes.map(r => ({
+    name: r.name.split(" to ")[0] || r.name,
+    stops: JSON.parse(r.stops).length
+  }));
 
   return (
     <div className="min-h-screen bg-[#070a13] text-slate-100 flex flex-col font-sans">
       {/* Header bar */}
       <header className="glass-panel border-b border-[#D4AF37]/15 px-6 py-4 sticky top-0 z-50 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="bg-[#003087] p-2 rounded-xl border border-[#D4AF37]/30 shadow-lg">
+          <div className="bg-[#003087] p-2 rounded-xl border border-[#D4AF37]/30 shadow-lg animate-pulse-glow">
             <Compass className="h-6 w-6 text-[#D4AF37] animate-spin-slow" />
           </div>
           <div>
@@ -266,13 +262,13 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
           </div>
 
           <div className="glass-panel p-5 rounded-2xl border border-white/5 flex items-center gap-4 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-16 h-16 bg-blue-500/5 rounded-full blur-xl pointer-events-none" />
-            <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
-              <Users className="h-6 w-6 text-blue-400" />
+            <div className="absolute top-0 right-0 w-16 h-16 bg-sky-500/5 rounded-full blur-xl pointer-events-none" />
+            <div className="p-3 bg-sky-500/10 border border-sky-500/20 rounded-xl text-sky-400">
+              <Compass className="h-6 w-6" />
             </div>
             <div>
-              <span className="text-slate-400 text-xs block mb-0.5">Total Boarding Pass scans</span>
-              <span className="text-2xl font-extrabold text-white">{boardingRecords.length} Scans</span>
+              <span className="text-slate-400 text-xs block mb-0.5">Total Active Stop Nodes</span>
+              <span className="text-2xl font-extrabold text-white">{totalStopsCount} Stops</span>
             </div>
           </div>
         </div>
@@ -298,15 +294,15 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
         <div className="flex-1 flex flex-col gap-6">
           {activeSubTab === "overview" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Ridership Distribution Bar Chart */}
+              {/* Fleet Status Distribution Bar Chart */}
               <div className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col gap-4">
                 <h3 className="font-bold text-white text-sm flex items-center gap-2">
-                  <TrendingUp className="h-4.5 w-4.5 text-[#D4AF37]" />
-                  <span>Ridership distribution per bus</span>
+                  <Activity className="h-4.5 w-4.5 text-[#D4AF37]" />
+                  <span>Fleet Status Distribution</span>
                 </h3>
                 <div className="h-[250px] w-full mt-2">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={ridershipData}>
+                    <BarChart data={fleetStatusData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                       <XAxis dataKey="name" stroke="#64748b" fontSize={11} />
                       <YAxis stroke="#64748b" fontSize={11} />
@@ -324,17 +320,17 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                 </div>
               </div>
 
-              {/* Peak usage Line Chart */}
+              {/* Route Stops Distribution Line Chart */}
               <div className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col gap-4">
                 <h3 className="font-bold text-white text-sm flex items-center gap-2">
-                  <Activity className="h-4.5 w-4.5 text-blue-400" />
-                  <span>Peak boarding hours (line chart)</span>
+                  <Compass className="h-4.5 w-4.5 text-blue-400" />
+                  <span>Route Stops Densities</span>
                 </h3>
                 <div className="h-[250px] w-full mt-2">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={trendData}>
+                    <LineChart data={routeStopsData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                      <XAxis dataKey="hour" stroke="#64748b" fontSize={11} />
+                      <XAxis dataKey="name" stroke="#64748b" fontSize={10} />
                       <YAxis stroke="#64748b" fontSize={11} />
                       <Tooltip
                         contentStyle={{
@@ -344,7 +340,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                           fontSize: "12px",
                         }}
                       />
-                      <Line type="monotone" dataKey="riders" stroke="#003087" strokeWidth={3} activeDot={{ r: 8 }} />
+                      <Line type="monotone" dataKey="stops" stroke="#003087" strokeWidth={3} activeDot={{ r: 8 }} />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
@@ -371,7 +367,19 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                     <tbody>
                       {buses.map((bus) => (
                         <tr key={bus.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                          <td className="py-3.5 pr-2 font-bold text-white">{bus.busNumber}</td>
+                          <td className="py-3.5 pr-2 font-bold text-white flex items-center">
+                            <span>{bus.busNumber}</span>
+                            {bus.status === "ACTIVE" && (
+                              <a
+                                href={`https://www.google.com/maps/search/?api=1&query=${bus.currentLat},${bus.currentLng}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-[10px] text-emerald-400 font-bold hover:underline ml-3 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20"
+                              >
+                                🌎 Live GPS
+                              </a>
+                            )}
+                          </td>
                           <td className="py-3.5 pr-2 text-slate-300">{bus.capacity} seats</td>
                           <td className="py-3.5 pr-2 text-slate-400">{bus.driverName || "None"}</td>
                           <td className="py-3.5 pr-2">
@@ -411,7 +419,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                       placeholder="e.g. Bus 15"
                       value={newBusNumber}
                       onChange={(e) => setNewBusNumber(e.target.value)}
-                      className="bg-slate-950/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-[#D4AF37]/50"
+                      className="bg-slate-950/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-650 focus:outline-none focus:border-[#D4AF37]/50"
                       required
                     />
                   </div>
@@ -482,7 +490,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                       placeholder="e.g. Choumatha to Campus"
                       value={newRouteName}
                       onChange={(e) => setNewRouteName(e.target.value)}
-                      className="bg-slate-950/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none"
+                      className="bg-slate-950/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-650 focus:outline-none"
                       required
                     />
                   </div>

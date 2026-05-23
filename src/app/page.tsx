@@ -6,9 +6,7 @@ import {
   Compass,
   ShieldCheck,
   Bus,
-  Key,
   ArrowRight,
-  QrCode,
   Sparkles,
   AlertCircle,
   Users,
@@ -19,8 +17,6 @@ import {
   ShieldAlert,
   ChevronDown,
   Clock,
-  CheckCircle,
-  HelpCircle,
   BookOpen,
 } from "lucide-react";
 import BusMap from "@/components/map/bus-map";
@@ -155,7 +151,7 @@ export default function Home() {
           </h1>
 
           <p className="text-sm md:text-base text-slate-400 max-w-2xl leading-relaxed">
-            Locate University of Barishal iconic yellow buses instantly on custom vector maps. Predict arrival sequences, calculate delays with interactive estimators, and scan boarding passes.
+            Locate University of Barishal iconic yellow buses instantly on custom vector maps. Predict arrival sequences and verify live satellite coordinates directly on Google Maps.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4">
@@ -339,7 +335,7 @@ export default function Home() {
                   <p className="text-xs text-slate-500 mt-0.5">Sadia Islam • 11th CSE</p>
                 </div>
                 <p className="text-xs text-slate-400 leading-relaxed mt-2">
-                  View scheduled bus timelines, pull up downloadable boarding passes, ask AI Schedule assistants questions, and customize notifications.
+                  View scheduled bus timelines, verify live coordinates, ask AI Schedule assistants questions, and customize notifications.
                 </p>
               </div>
 
@@ -363,7 +359,7 @@ export default function Home() {
                   <p className="text-xs text-slate-500 mt-0.5">Abul Kalam • Bus 12</p>
                 </div>
                 <p className="text-xs text-slate-400 leading-relaxed mt-2">
-                  Control the interactive virtual steering wheel, start live drive simulations updating coordinates, log boarding check-ins, and trigger SOS alerts.
+                  Control the interactive virtual steering wheel, start live drive simulations updating coordinates, and trigger SOS alerts.
                 </p>
               </div>
 
@@ -404,7 +400,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 5 — INTERACTIVE DELAY RISK ESTIMATOR WIDGET (Wow Factor!) */}
+      {/* SECTION 5 — INTERACTIVE DELAY RISK ESTIMATOR WIDGET */}
       <section className="py-24 border-b border-white/5 bg-slate-950/40 relative">
         <div className="max-w-3xl w-full mx-auto px-6 text-center flex flex-col gap-8">
           <div>
@@ -474,47 +470,47 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 6 — QR ATTENDANCE BOARDING TIMELINE */}
+      {/* SECTION 6 — GOOGLE MAPS TELEMETRY TIMELINE */}
       <section className="py-24 border-b border-white/5 relative bg-slate-950/20">
         <div className="max-w-7xl w-full mx-auto px-6 text-center flex flex-col gap-12">
           <div>
-            <span className="text-xs uppercase tracking-widest text-[#D4AF37] font-bold block mb-1">Process Guide</span>
-            <h2 className="text-3xl font-extrabold text-white">Interactive Boarding Process</h2>
+            <span className="text-xs uppercase tracking-widest text-[#D4AF37] font-bold block mb-1">commuter sequence</span>
+            <h2 className="text-3xl font-extrabold text-white">Google Maps Telemetry Flow</h2>
             <p className="text-xs text-slate-400 mt-2 max-w-md mx-auto">
-              How attendance is recorded and managed reactively in 4 easy steps.
+              How real-world live GPS positions are synced and redirectable in 4 quick steps.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-left">
             <div className="glass-panel p-5 rounded-xl border border-white/5 relative flex flex-col gap-3">
               <div className="text-base font-extrabold text-[#D4AF37] font-mono">01</div>
-              <h4 className="font-bold text-white text-sm">Generate Card</h4>
+              <h4 className="font-bold text-white text-sm">GPS Broadcast</h4>
               <p className="text-[11px] text-slate-400 leading-relaxed">
-                Log into your student portal and pull up your unique pass carrying your Student ID.
+                The yellow bus driver console steers and broadcasts coordinates in real-time.
               </p>
             </div>
 
             <div className="glass-panel p-5 rounded-xl border border-white/5 relative flex flex-col gap-3">
               <div className="text-base font-extrabold text-[#D4AF37] font-mono">02</div>
-              <h4 className="font-bold text-white text-sm">Driver Scan</h4>
+              <h4 className="font-bold text-white text-sm">Sequence Ticks</h4>
               <p className="text-[11px] text-slate-400 leading-relaxed">
-                Upon boarding, the driver scans your pass in one-click from the driver console dashboard.
+                Stops automatically transition states from past arrived to active live locations.
               </p>
             </div>
 
             <div className="glass-panel p-5 rounded-xl border border-white/5 relative flex flex-col gap-3">
               <div className="text-base font-extrabold text-[#D4AF37] font-mono">03</div>
-              <h4 className="font-bold text-white text-sm">Instant Sync</h4>
+              <h4 className="font-bold text-white text-sm">Google Maps Link</h4>
               <p className="text-[11px] text-slate-400 leading-relaxed">
-                Prisma updates SQLite database records, streaming attendance instantly to the Admin overview panel.
+                Clickable redirection pins are computed based on the active bus coordinates.
               </p>
             </div>
 
             <div className="glass-panel p-5 rounded-xl border border-white/5 relative flex flex-col gap-3">
               <div className="text-base font-extrabold text-[#D4AF37] font-mono">04</div>
-              <h4 className="font-bold text-white text-sm">Seat Counters</h4>
+              <h4 className="font-bold text-white text-sm">Satellite Telemetry</h4>
               <p className="text-[11px] text-slate-400 leading-relaxed">
-                Bus capacity indicators decrease in real-time, giving students accurate seat counts.
+                Students click links to preview real-world locations directly on satellite Maps.
               </p>
             </div>
           </div>
@@ -538,11 +534,11 @@ export default function Home() {
             
             <div className="glass-panel p-5 rounded-xl border border-white/5 flex flex-col gap-3 group hover:border-[#D4AF37]/30 transition-all duration-300">
               <div className="p-3 bg-[#003087] border border-[#D4AF37]/20 rounded-xl w-fit text-[#D4AF37] group-hover:scale-105 transition-transform">
-                <QrCode className="h-5 w-5" />
+                <Compass className="h-5 w-5" />
               </div>
-              <h4 className="font-bold text-white text-sm">QR Commute Pass</h4>
+              <h4 className="font-bold text-white text-sm">Google Maps Live</h4>
               <p className="text-[11px] text-slate-400 leading-relaxed">
-                Unique boarding card QR display representing student profiles, confirming check-ins instantly.
+                Dynamically generates live satellite hyperlinks to match simulated telemetry sequences instantly.
               </p>
             </div>
 
@@ -562,13 +558,13 @@ export default function Home() {
               </div>
               <h4 className="font-bold text-white text-sm">Interactive Analytics</h4>
               <p className="text-[11px] text-slate-400 leading-relaxed">
-                Aggregates active boarding scan trends using Recharts line and bar graphs on the Admin panel.
+                Aggregates active telemetry scan trends using Recharts line and bar graphs on the Admin panel.
               </p>
             </div>
 
             <div className="glass-panel p-5 rounded-xl border border-white/5 flex flex-col gap-3 group hover:border-[#D4AF37]/30 transition-all duration-300">
               <div className="p-3 bg-[#003087] border border-[#D4AF37]/20 rounded-xl w-fit text-[#D4AF37] group-hover:scale-105 transition-transform">
-                <Compass className="h-5 w-5" />
+                <Navigation className="h-5 w-5" />
               </div>
               <h4 className="font-bold text-white text-sm">Stop Planner Builder</h4>
               <p className="text-[11px] text-slate-400 leading-relaxed">
@@ -633,12 +629,12 @@ export default function Home() {
                 onClick={() => setActiveAccordion(activeAccordion === 2 ? null : 2)}
                 className="w-full p-5 flex items-center justify-between text-left focus:outline-none"
               >
-                <span className="font-bold text-white text-sm">How to get replacement passes?</span>
+                <span className="font-bold text-white text-sm">How to verify coordinate details?</span>
                 <ChevronDown className={`h-4.5 w-4.5 text-[#D4AF37] transition-transform duration-300 ${activeAccordion === 2 ? "rotate-180" : ""}`} />
               </button>
               {activeAccordion === 2 && (
-                <div className="px-5 pb-5 text-xs text-slate-400 border-t border-white/5 pt-4 leading-relaxed">
-                  If you lose your pass or need to edit your assigned route, contact the **University Transport Office** directly from your Student dashboard, or submit an edit request via settings.
+                <div className="px-5 pb-5 text-xs text-slate-400 border-t border-white/5 pt-4 leading-relaxed font-mono text-[11px]">
+                  All active coordinates can be clicked and opened directly on real-world Google Maps satellite overlays for testing!
                 </div>
               )}
             </div>

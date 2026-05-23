@@ -5,22 +5,19 @@ import {
   Search,
   MapPin,
   Clock,
-  QrCode,
   Bell,
   MessageSquare,
   Send,
   Star,
-  Settings,
   User,
   LogOut,
   Navigation,
   Compass,
   ArrowRight,
-  TrendingUp,
   Info,
 } from "lucide-react";
 import BusMap from "../map/bus-map";
-import { getBuses, getActiveBuses } from "@/actions/buses";
+import { getBuses } from "@/actions/buses";
 import { getRoutes } from "@/actions/routes";
 import { getNotifications } from "@/actions/notifications";
 import { logoutUser } from "@/actions/auth";
@@ -37,7 +34,7 @@ interface StudentDashboardProps {
 }
 
 export default function StudentDashboard({ user }: StudentDashboardProps) {
-  const [activeTab, setActiveTab] = useState<"track" | "qrcode" | "ai-chat" | "notifications">("track");
+  const [activeTab, setActiveTab] = useState<"track" | "ai-chat" | "notifications">("track");
   const [buses, setBuses] = useState<any[]>([]);
   const [routes, setRoutes] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -111,7 +108,6 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
     window.location.reload();
   };
 
-  // Filtered buses based on search query
   const filteredBuses = buses.filter(
     (b) =>
       b.busNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -123,7 +119,7 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
       {/* Header bar */}
       <header className="glass-panel border-b border-[#D4AF37]/15 px-6 py-4 sticky top-0 z-50 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="bg-[#003087] p-2 rounded-xl border border-[#D4AF37]/30 shadow-lg">
+          <div className="bg-[#003087] p-2 rounded-xl border border-[#D4AF37]/30 shadow-lg animate-pulse-glow">
             <Compass className="h-6 w-6 text-[#D4AF37] animate-spin-slow" />
           </div>
           <div>
@@ -198,18 +194,6 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
             >
               <Compass className="h-4.5 w-4.5 text-[#D4AF37]" />
               <span>Live Map Tracker</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab("qrcode")}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
-                activeTab === "qrcode"
-                  ? "bg-[#003087] text-white border border-[#D4AF37]/35 shadow-lg"
-                  : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
-              }`}
-            >
-              <QrCode className="h-4.5 w-4.5 text-[#D4AF37]" />
-              <span>Boarding QR Pass</span>
             </button>
 
             <button
@@ -322,6 +306,19 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
                           </div>
                         )}
 
+                        {/* GOOGLE MAPS LIVE COORDINATES LINK (WOW Feature!) */}
+                        {isSelected && (
+                          <a
+                            href={`https://www.google.com/maps/search/?api=1&query=${bus.currentLat},${bus.currentLng}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-1.5 px-3 py-2 bg-emerald-500/10 hover:bg-emerald-500/25 border border-emerald-500/35 text-emerald-400 font-bold rounded-xl transition-all duration-300 shadow-md text-[10px] w-full text-center mt-1"
+                            onClick={(e) => e.stopPropagation()} // Stop triggering setSelectedBusNumber again!
+                          >
+                            🌎 Open Live GPS on Google Maps
+                          </a>
+                        )}
+
                         <div className="flex items-center justify-between text-[11px] text-slate-500 border-t border-white/5 pt-2 mt-1">
                           <span className="flex items-center gap-1">
                             <User className="h-3 w-3" />
@@ -341,40 +338,6 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
                     </div>
                   )}
                 </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === "qrcode" && (
-            <div className="glass-panel p-8 rounded-2xl border border-white/5 flex flex-col items-center justify-center text-center gap-6 max-w-md mx-auto w-full">
-              <div>
-                <h3 className="text-xl font-bold text-white mb-1">Your Boarding QR Pass</h3>
-                <p className="text-xs text-slate-400">Scan this pass at the bus door to record transport attendance</p>
-              </div>
-
-              {/* QR Box */}
-              <div className="bg-white p-6 rounded-2xl shadow-2xl relative border-4 border-[#D4AF37] shadow-[#D4AF37]/5">
-                <div className="w-48 h-48 flex flex-col items-center justify-center gap-3">
-                  <QrCode className="w-36 h-36 text-slate-950" />
-                  <span className="font-mono text-slate-950 text-xs font-bold tracking-widest">{user.studentId}</span>
-                </div>
-              </div>
-
-              {/* Boarding Info */}
-              <div className="w-full grid grid-cols-2 gap-4 bg-slate-950/40 p-4 rounded-xl border border-white/5 text-xs">
-                <div className="text-left">
-                  <span className="text-slate-400 block mb-0.5">Rider</span>
-                  <span className="font-semibold text-white">{user.name}</span>
-                </div>
-                <div className="text-right">
-                  <span className="text-slate-400 block mb-0.5">Department</span>
-                  <span className="font-semibold text-[#D4AF37]">{user.department}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 text-[10px] text-slate-400 bg-amber-500/5 px-3 py-1.5 rounded border border-amber-500/10">
-                <Info className="h-3.5 w-3.5 text-amber-500 shrink-0" />
-                <span>The driver will scan this QR card from their dashboard upon boarding.</span>
               </div>
             </div>
           )}
@@ -406,7 +369,6 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
                           : "bg-slate-900 text-slate-200 border border-white/5 rounded-tl-none"
                       }`}
                     >
-                      {/* Formatted Markdown inside responses */}
                       <p className="whitespace-pre-line">{msg.text}</p>
                     </div>
                     <span className="text-[9px] text-slate-500 mt-1 uppercase tracking-widest font-mono">
