@@ -161,7 +161,14 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
     if (!notifTitle.trim() || !notifMessage.trim()) return;
 
     const res = await createNotification(notifTitle, notifMessage);
-    if (res.success) {
+    if (res.success && res.notification) {
+      try {
+        const channel = new BroadcastChannel("campusbus_realtime");
+        channel.postMessage({ type: "notification", data: res.notification });
+        channel.close();
+      } catch (err) {
+        console.warn("BroadcastChannel postMessage failed:", err);
+      }
       setNotifTitle("");
       setNotifMessage("");
       setNotifSuccess(true);

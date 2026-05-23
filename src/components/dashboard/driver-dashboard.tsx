@@ -90,6 +90,18 @@ export default function DriverDashboard({ user }: DriverDashboardProps) {
       const res = await updateBusLocation(myBus.busNumber, targetStop.lat, targetStop.lng);
       if (res.bus) {
         setMyBus(res.bus);
+        
+        // Broadcast location-update event in real-time
+        try {
+          const channel = new BroadcastChannel("campusbus_realtime");
+          channel.postMessage({
+            type: "location-update",
+            data: { busNumber: myBus.busNumber, lat: targetStop.lat, lng: targetStop.lng }
+          });
+          channel.close();
+        } catch (e) {
+          console.warn("Location broadcast failed:", e);
+        }
       }
     }, intervalTime);
 
@@ -109,7 +121,16 @@ export default function DriverDashboard({ user }: DriverDashboardProps) {
     const title = `EMERGENCY ALERT: ${myBus.busNumber}`;
     const msg = `🚨 Driver ${user.name} of ${myBus.busNumber} has broadcasted an emergency delay alert. Transit delays are expected on this route. Please stand by.`;
     
-    await createNotification(title, msg);
+    const res = await createNotification(title, msg);
+    if (res.success && res.notification) {
+      try {
+        const channel = new BroadcastChannel("campusbus_realtime");
+        channel.postMessage({ type: "notification", data: res.notification });
+        channel.close();
+      } catch (e) {
+        console.warn("SOS broadcast failed:", e);
+      }
+    }
     alert("🚨 Emergency SOS alert broadcasted successfully to all students!");
   };
 

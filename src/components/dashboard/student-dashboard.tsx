@@ -69,6 +69,63 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
     return () => clearInterval(interval);
   }, []);
 
+  const [activeToast, setActiveToast] = useState<{ title: string; message: string } | null>(null);
+
+  const playNotificationSound = () => {
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const playChime = (time: number, freq: number, duration: number) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, time);
+        gain.gain.setValueAtTime(0.08, time);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(time);
+        osc.stop(time + duration);
+      };
+      const now = audioCtx.currentTime;
+      playChime(now, 587.33, 0.15); // D5
+      playChime(now + 0.12, 880.00, 0.3); // A5
+    } catch (e) {
+      console.warn("Chime failed:", e);
+    }
+  };
+
+  // Real-time Event simulation using BroadcastChannel API
+  useEffect(() => {
+    try {
+      const channel = new BroadcastChannel("campusbus_realtime");
+      channel.onmessage = (event) => {
+        if (!event.data) return;
+
+        if (event.data.type === "notification") {
+          const newNotif = event.data.data;
+          setNotifications((prev) => [newNotif, ...prev]);
+          setActiveToast({ title: newNotif.title, message: newNotif.message });
+          playNotificationSound();
+
+          setTimeout(() => {
+            setActiveToast((curr) => {
+              if (curr?.title === newNotif.title) return null;
+              return curr;
+            });
+          }, 7000);
+        } else if (event.data.type === "location-update") {
+          const { busNumber, lat, lng } = event.data.data;
+          setBuses((prev) =>
+            prev.map((b) => (b.busNumber === busNumber ? { ...b, currentLat: lat, currentLng: lng } : b))
+          );
+        }
+      };
+      return () => channel.close();
+    } catch (err) {
+      console.warn("BroadcastChannel failed:", err);
+    }
+  }, []);
+
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages]);
@@ -439,6 +496,24 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
                   </div>
                 )}
               </div>
+            </div>
+          )}
+          {/* Real-time Floating Toast Alert Banner */}
+          {activeToast && (
+            <div className="fixed bottom-6 right-6 z-[9999] max-w-sm bg-slate-950/95 border border-[#D4AF37]/50 rounded-2xl p-5 shadow-[0_0_25px_rgba(212,175,55,0.2)] animate-float flex flex-col gap-2 backdrop-blur-md">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase font-bold tracking-widest text-[#D4AF37] font-mono flex items-center gap-1.5 animate-pulse">
+                  🚨 Live Alert Pushed
+                </span>
+                <button
+                  onClick={() => setActiveToast(null)}
+                  className="text-slate-500 hover:text-white text-xs px-1.5 py-0.5 rounded hover:bg-white/5 transition-all"
+                >
+                  ✕
+                </button>
+              </div>
+              <h4 className="font-extrabold text-white text-sm">{activeToast.title}</h4>
+              <p className="text-xs text-slate-400 leading-relaxed">{activeToast.message}</p>
             </div>
           )}
         </div>
