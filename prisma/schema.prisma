@@ -1,0 +1,57 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  password     String
+  name         String
+  role         String   // STUDENT, DRIVER, ADMIN
+  studentId    String?  @unique
+  department   String?
+  batch        String?
+  phone        String?
+  busNumber    String?
+  profileImage String?
+  createdAt    DateTime @default(now())
+}
+
+model Bus {
+  id         String   @id @default(uuid())
+  busNumber  String   @unique
+  driverId   String?  @unique
+  driverName String?
+  capacity   Int      @default(50)
+  status     String   @default("ACTIVE") // ACTIVE, INACTIVE, MAINTENANCE
+  currentLat Float    @default(22.8025)  // Barishal coords
+  currentLng Float    @default(90.3522)
+  updatedAt  DateTime @updatedAt
+}
+
+model Route {
+  id        String  @id @default(uuid())
+  name      String
+  stops     String  // JSON string containing array of {name, lat, lng, order}
+  schedules String  // JSON string containing schedule list (e.g. ["8:00 AM", "12:00 PM"])
+  busId     String?
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model BoardingRecord {
+  id          String   @id @default(uuid())
+  studentId   String
+  studentName String
+  busNumber   String
+  timestamp   DateTime @default(now())
+}
