@@ -347,13 +347,22 @@ export default function LandingPage({ buses, routes }: LandingPageProps) {
                 </p>
               </div>
 
-              <Link
-                href="/login?email=driver1@campusbus.com"
-                className="w-full bg-[#003087] hover:bg-[#00205c] border border-amber-500/35 py-2.5 rounded-xl text-xs font-bold text-white flex items-center justify-center gap-1.5 transition-all duration-300"
-              >
-                <span>Login Driver Console</span>
-                <ArrowRight className="h-4 w-4 text-[#D4AF37]" />
-              </Link>
+              <div className="flex flex-col gap-2 w-full">
+                <Link
+                  href="/login?email=driver1@campusbus.com"
+                  className="w-full bg-[#003087] hover:bg-[#00205c] border border-[#D4AF37]/35 py-2.5 rounded-xl text-xs font-bold text-white flex items-center justify-center gap-1.5 transition-all duration-300"
+                >
+                  <span>Driver Kalam (Bus 12 - Barishal)</span>
+                  <ArrowRight className="h-4 w-4 text-[#D4AF37]" />
+                </Link>
+                <Link
+                  href="/login?email=driver3@campusbus.com"
+                  className="w-full bg-slate-900/80 hover:bg-slate-900 border border-[#D4AF37]/35 py-2.5 rounded-xl text-xs font-bold text-[#D4AF37] flex items-center justify-center gap-1.5 transition-all duration-300 shadow-md"
+                >
+                  <span>Dhaka Driver Solaiman (Bus 99)</span>
+                  <ArrowRight className="h-4 w-4 text-[#D4AF37]" />
+                </Link>
+              </div>
             </div>
 
             {/* Admin Flip-Card */}

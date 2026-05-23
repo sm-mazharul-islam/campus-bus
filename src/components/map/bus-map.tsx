@@ -37,11 +37,55 @@ export default function BusMap({
   currentStopIndex = 1, // Default to a realistic active index for preview
 }: BusMapProps) {
   
-  // Bounds around Barishal City (Lat: 22.66 to 22.83, Lng: 90.32 to 90.39)
-  const minLat = 22.66;
-  const maxLat = 22.83;
-  const minLng = 90.32;
-  const maxLng = 90.39;
+  // Dynamic Map Bounds calculation to support any custom route city (e.g. Dhaka or Barishal)
+  let minLat = 22.66;
+  let maxLat = 22.83;
+  let minLng = 90.32;
+  let maxLng = 90.39;
+
+  const allStops: Array<{ lat: number; lng: number }> = [];
+  routes.forEach((route) => {
+    try {
+      const parsed = JSON.parse(route.stops);
+      if (Array.isArray(parsed)) {
+        allStops.push(...parsed);
+      }
+    } catch (e) {}
+  });
+
+  // Include active buses in coordinate envelope
+  const activeBuses = buses.filter((bus) => bus.status === "ACTIVE");
+  activeBuses.forEach((bus) => {
+    allStops.push({ lat: bus.currentLat, lng: bus.currentLng });
+  });
+
+  if (allStops.length > 0) {
+    const lats = allStops.map((s) => s.lat);
+    const lngs = allStops.map((s) => s.lng);
+    const minL = Math.min(...lats);
+    const maxL = Math.max(...lats);
+    const minG = Math.min(...lngs);
+    const maxG = Math.max(...lngs);
+
+    const spanLat = Math.max(maxL - minL, 0.005);
+    const spanLng = Math.max(maxG - minG, 0.005);
+
+    // Padding proportional to route bounds
+    minLat = minL - spanLat * 0.18;
+    maxLat = maxL + spanLat * 0.18;
+    minLng = minG - spanLng * 0.18;
+    maxLng = maxG + spanLng * 0.18;
+  }
+
+  // Check if active view is Dhaka-based route to adjust titles
+  const isDhakaRoute = routes.some(
+    (r) =>
+      r.name.toLowerCase().includes("dhaka") ||
+      r.stops.toLowerCase().includes("gulistan")
+  );
+  const mapTitle = isDhakaRoute
+    ? "Dhaka Metro Live Route Tracker"
+    : "Barishal University Live Route Tracker";
 
   const mapToCanvas = (lat: number, lng: number) => {
     const x = ((lng - minLng) / (maxLng - minLng)) * 100;
@@ -76,7 +120,7 @@ export default function BusMap({
           </div>
           <div>
             <span className="font-extrabold text-white text-sm flex items-center gap-1.5">
-              Barishal University Live Route Tracker
+              {mapTitle}
             </span>
             <p className="text-[10px] text-slate-400">Past, Active, and Future Telemetry stream</p>
           </div>
@@ -256,9 +300,11 @@ export default function BusMap({
         >
           <div className="bg-[#003087]/45 border border-[#D4AF37]/50 px-3 py-1.5 rounded-xl backdrop-blur-md">
             <span className="text-[9px] font-black tracking-widest text-[#D4AF37] uppercase block">
-              University of Barishal
+              {isDhakaRoute ? "Dhaka Metro Transit" : "University of Barishal"}
             </span>
-            <span className="text-[11px] text-white font-bold">Main Campus</span>
+            <span className="text-[11px] text-white font-bold">
+              {isDhakaRoute ? "Shahbagh Circle" : "Main Campus"}
+            </span>
           </div>
         </div>
       </div>

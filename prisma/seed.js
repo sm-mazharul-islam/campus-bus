@@ -55,6 +55,19 @@ async function main() {
     }
   });
 
+  const driver3 = await prisma.user.create({
+    data: {
+      email: "driver3@campusbus.com",
+      password: "driver123",
+      name: "Solaiman Khan",
+      role: "DRIVER",
+      studentId: "D-103",
+      department: "Transport Section",
+      busNumber: "Bus 99",
+      phone: "+8801933333333",
+    }
+  });
+
   // Seed Students
   await prisma.user.create({
     data: {
@@ -113,6 +126,18 @@ async function main() {
 
   await prisma.bus.create({
     data: {
+      busNumber: "Bus 99",
+      driverId: driver3.id,
+      driverName: driver3.name,
+      capacity: 40,
+      status: "ACTIVE",
+      currentLat: 23.7252,
+      currentLng: 90.4124,
+    }
+  });
+
+  await prisma.bus.create({
+    data: {
       busNumber: "Bus 03",
       capacity: 50,
       status: "MAINTENANCE",
@@ -147,6 +172,19 @@ async function main() {
       ]),
       schedules: JSON.stringify(["7:45 AM", "8:45 AM", "2:00 PM", "5:30 PM"]),
       busId: "Bus 07"
+    }
+  });
+
+  await prisma.route.create({
+    data: {
+      name: "Dhaka Test Route (Gulistan to Science Lab)",
+      stops: JSON.stringify([
+        { name: "Gulistan Terminal", lat: 23.7252, lng: 90.4124, order: 1 },
+        { name: "Shahbagh Intersection", lat: 23.7388, lng: 90.3965, order: 2 },
+        { name: "Science Lab Crossing", lat: 23.7374, lng: 90.3802, order: 3 }
+      ]),
+      schedules: JSON.stringify(["8:00 AM", "10:00 AM", "2:00 PM", "6:00 PM"]),
+      busId: "Bus 99"
     }
   });
 
