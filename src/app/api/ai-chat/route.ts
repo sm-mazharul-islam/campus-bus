@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     for (const b of buses) {
       if (lowerMsg.includes(b.busNumber.toLowerCase())) {
         matchedBus = b;
-        matchedRoute = routes.find((x) => x.busId === b.busNumber);
+        matchedRoute = routes.find((x: any) => x.busId === b.busNumber);
         break;
       }
     }
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
         (r.busId && lowerMsg.includes(r.busId.toLowerCase()))
       ) {
         matchedRoute = r;
-        matchedBus = buses.find((x) => x.busNumber === r.busId);
+        matchedBus = buses.find((x: any) => x.busNumber === r.busId);
         break;
       }
     }
@@ -75,12 +75,12 @@ export async function POST(req: Request) {
       lowerMsg.includes("fleet")
     ) {
       const active = buses
-        .filter((x) => x.status === "ACTIVE")
-        .map((x) => x.busNumber)
+        .filter((x: any) => x.status === "ACTIVE")
+        .map((x: any) => x.busNumber)
         .join(", ");
       const maint = buses
-        .filter((x) => x.status === "MAINTENANCE")
-        .map((x) => x.busNumber)
+        .filter((x: any) => x.status === "MAINTENANCE")
+        .map((x: any) => x.busNumber)
         .join(", ");
       reply = `📊 **Current Transit Fleet Overview:**\n\n✅ **Active Buses:** ${active || "None"}\n🛠️ **In Maintenance:** ${maint || "None"}\n\nAsk me about a specific bus number (e.g. "Bus 99" or "Bus 12") to get its live driver, route, and GPS coordinates!`;
     } else {
