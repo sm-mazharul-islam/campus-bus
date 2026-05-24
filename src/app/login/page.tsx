@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { loginUser } from "@/actions/auth";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { Compass, Key, Mail, Lock, ShieldAlert, CheckCircle, Sparkles } from "lucide-react";
 
@@ -46,17 +46,16 @@ function LoginForm() {
     setError(null);
     setLoading(true);
 
-    const formData = new FormData();
-    formData.append("email", email);
-    formData.append("password", password);
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
 
-    const res = await loginUser(formData);
-
-    if (res.error) {
-      setError(res.error);
+    if (res?.error) {
+      setError("Invalid email or password");
       setLoading(false);
     } else {
-      // Redirect directly to dashboard route
       window.location.href = "/dashboard";
     }
   };

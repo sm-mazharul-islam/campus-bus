@@ -1,7 +1,8 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { cookies } from "next/headers";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 export interface UserSession {
   id: string;
@@ -17,6 +18,7 @@ export interface UserSession {
 }
 
 export async function loginUser(formData: FormData) {
+  // Retained as a thin backward-compatible shell, actual logins utilize client-side next-auth signIn
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
@@ -33,32 +35,9 @@ export async function loginUser(formData: FormData) {
       return { error: "Invalid email or password" };
     }
 
-    // Set cookie session (simple JSON for mock ease-of-use and speed)
-    const sessionData: UserSession = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      studentId: user.studentId,
-      department: user.department,
-      batch: user.batch,
-      phone: user.phone,
-      busNumber: user.busNumber,
-      profileImage: user.profileImage,
-    };
-
-    const cookieStore = await cookies();
-    cookieStore.set("campusbus_session", JSON.stringify(sessionData), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24 * 7, // 1 week
-      path: "/",
-    });
-
     return { success: true, role: user.role };
   } catch (error: any) {
-    console.error("Login error:", error);
-    return { error: "An unexpected error occurred. Please try again." };
+    return { error: "An unexpected error occurred." };
   }
 }
 
@@ -100,12 +79,12 @@ export async function registerUser(data: {
       }
     }
 
-    // Create user
+    // Create user in SQLite
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
-        password, // In a real production app we would hash the password (e.g. bcrypt)
+        password,
         role,
         studentId: studentId || null,
         department: department || null,
@@ -113,28 +92,6 @@ export async function registerUser(data: {
         phone: phone || null,
         busNumber: busNumber || null,
       },
-    });
-
-    // Automatically log user in
-    const sessionData: UserSession = {
-      id: newUser.id,
-      name: newUser.name,
-      email: newUser.email,
-      role: newUser.role,
-      studentId: newUser.studentId,
-      department: newUser.department,
-      batch: newUser.batch,
-      phone: newUser.phone,
-      busNumber: newUser.busNumber,
-      profileImage: newUser.profileImage,
-    };
-
-    const cookieStore = await cookies();
-    cookieStore.set("campusbus_session", JSON.stringify(sessionData), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24 * 7,
-      path: "/",
     });
 
     return { success: true, role: newUser.role };
@@ -145,22 +102,29 @@ export async function registerUser(data: {
 }
 
 export async function logoutUser() {
-  const cookieStore = await cookies();
-  cookieStore.delete("campusbus_session");
+  // Retained as a thin backward-compatible adapter. Actual signouts trigger client signOut()
   return { success: true };
 }
 
 export async function getCurrentUser(): Promise<UserSession | null> {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("campusbus_session");
-
-  if (!sessionCookie || !sessionCookie.value) {
-    return null;
-  }
-
   try {
-    return JSON.parse(sessionCookie.value) as UserSession;
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return null;
+    }
+    return {
+      id: session.user.id,
+      name: session.user.name,
+      email: session.user.email,
+      role: session.user.role,
+      studentId: session.user.studentId,
+      department: session.user.department,
+      batch: session.user.batch,
+      phone: session.user.phone,
+      busNumber: session.user.busNumber,
+    };
   } catch (e) {
+    console.error("Failed to get NextAuth session:", e);
     return null;
   }
 }

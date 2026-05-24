@@ -28,7 +28,7 @@ import {
 import { getBuses, createBus, updateBus, deleteBus } from "@/actions/buses";
 import { getRoutes, createRoute, updateRoute, deleteRoute } from "@/actions/routes";
 import { createNotification } from "@/actions/notifications";
-import { logoutUser } from "@/actions/auth";
+import { signOut } from "next-auth/react";
 import BusMap from "../map/bus-map";
 
 interface AdminDashboardProps {
@@ -179,8 +179,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
   };
 
   const handleLogout = async () => {
-    await logoutUser();
-    window.location.reload();
+    await signOut({ callbackUrl: "/login" });
   };
 
   // Recharts Chart Data Processing

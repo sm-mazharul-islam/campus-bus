@@ -14,7 +14,7 @@ import {
 import { getBuses, updateBusLocation } from "@/actions/buses";
 import { getRoutes } from "@/actions/routes";
 import { createNotification } from "@/actions/notifications";
-import { logoutUser } from "@/actions/auth";
+import { signOut } from "next-auth/react";
 import BusMap from "../map/bus-map";
 
 interface DriverDashboardProps {
@@ -135,8 +135,7 @@ export default function DriverDashboard({ user }: DriverDashboardProps) {
   };
 
   const handleLogout = async () => {
-    await logoutUser();
-    window.location.reload();
+    await signOut({ callbackUrl: "/login" });
   };
 
   return (

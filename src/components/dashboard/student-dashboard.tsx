@@ -20,7 +20,7 @@ import BusMap from "../map/bus-map";
 import { getBuses } from "@/actions/buses";
 import { getRoutes } from "@/actions/routes";
 import { getNotifications } from "@/actions/notifications";
-import { logoutUser } from "@/actions/auth";
+import { signOut } from "next-auth/react";
 
 interface StudentDashboardProps {
   user: {
@@ -161,8 +161,7 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
   };
 
   const handleLogout = async () => {
-    await logoutUser();
-    window.location.reload();
+    await signOut({ callbackUrl: "/login" });
   };
 
   const filteredBuses = buses.filter(

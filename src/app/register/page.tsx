@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { registerUser } from "@/actions/auth";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { Compass, User, Mail, Lock, Phone, BookOpen, ShieldAlert, CheckCircle, Bus } from "lucide-react";
 
@@ -46,7 +47,12 @@ export default function RegisterPage() {
       setError(res.error);
       setLoading(false);
     } else {
-      window.location.href = "/dashboard";
+      // Automatically sign user in using NextAuth Credentials
+      await signIn("credentials", {
+        email,
+        password,
+        callbackUrl: "/dashboard",
+      });
     }
   };
 
