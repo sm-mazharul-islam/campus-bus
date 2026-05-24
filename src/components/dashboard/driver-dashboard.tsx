@@ -42,12 +42,12 @@ export default function DriverDashboard({ user }: DriverDashboardProps) {
     async function fetchData() {
       const busData = await getBuses();
       setBuses(busData);
-      const matchedBus = busData.find((b) => b.busNumber === user.busNumber);
+      const matchedBus = busData.find((b: any) => b.busNumber === user.busNumber);
       setMyBus(matchedBus || null);
 
       const routeData = await getRoutes();
       setRoutes(routeData);
-      const matchedRoute = routeData.find((r) => r.busId === user.busNumber);
+      const matchedRoute = routeData.find((r: any) => r.busId === user.busNumber);
       setMyRoute(matchedRoute || null);
     }
     fetchData();
