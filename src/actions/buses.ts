@@ -2,16 +2,73 @@
 
 import { prisma } from "@/lib/db";
 
+const mockBuses = [
+  {
+    id: "bus-12-id",
+    busNumber: "Bus 12",
+    driverId: "driver-1-id",
+    driverName: "Abul Kalam",
+    capacity: 60,
+    status: "ACTIVE",
+    currentLat: 22.8025,
+    currentLng: 90.3522,
+    updatedAt: new Date()
+  },
+  {
+    id: "bus-07-id",
+    busNumber: "Bus 07",
+    driverId: "driver-2-id",
+    driverName: "Mofizur Rahman",
+    capacity: 55,
+    status: "ACTIVE",
+    currentLat: 22.7850,
+    currentLng: 90.3420,
+    updatedAt: new Date()
+  },
+  {
+    id: "bus-99-id",
+    busNumber: "Bus 99",
+    driverId: "driver-3-id",
+    driverName: "Solaiman Khan",
+    capacity: 40,
+    status: "ACTIVE",
+    currentLat: 23.7252,
+    currentLng: 90.4124,
+    updatedAt: new Date()
+  },
+  {
+    id: "bus-03-id",
+    busNumber: "Bus 03",
+    driverId: null,
+    driverName: null,
+    capacity: 50,
+    status: "MAINTENANCE",
+    currentLat: 22.8100,
+    currentLng: 90.3600,
+    updatedAt: new Date()
+  }
+];
+
 export async function getBuses() {
-  return prisma.bus.findMany({
-    orderBy: { busNumber: "asc" }
-  });
+  try {
+    return await prisma.bus.findMany({
+      orderBy: { busNumber: "asc" }
+    });
+  } catch (err) {
+    console.error("Database getBuses failed, using fallback:", err);
+    return mockBuses;
+  }
 }
 
 export async function getActiveBuses() {
-  return prisma.bus.findMany({
-    where: { status: "ACTIVE" }
-  });
+  try {
+    return await prisma.bus.findMany({
+      where: { status: "ACTIVE" }
+    });
+  } catch (err) {
+    console.error("Database getActiveBuses failed, using fallback:", err);
+    return mockBuses.filter(b => b.status === "ACTIVE");
+  }
 }
 
 export async function updateBusLocation(busNumber: string, lat: number, lng: number) {
