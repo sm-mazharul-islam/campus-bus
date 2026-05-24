@@ -182,7 +182,7 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
             <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
               CampusBus <span className="text-xs text-[#D4AF37] px-2 py-0.5 bg-[#D4AF37]/10 rounded border border-[#D4AF37]/20">Student</span>
             </h1>
-            <p className="text-[10px] text-slate-400">University of Barishal</p>
+            <p className="text-[10px] text-slate-400">Bangladesh University</p>
           </div>
         </div>
 

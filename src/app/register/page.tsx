@@ -31,6 +31,15 @@ export default function RegisterPage() {
       return;
     }
 
+    if (role === "STUDENT") {
+      const digitsOnly = studentId.replace(/\D/g, "");
+      if (digitsOnly.length !== 12 || studentId.length !== 12) {
+        setError("Student ID must be exactly 12 numeric digits");
+        setLoading(false);
+        return;
+      }
+    }
+
     const res = await registerUser({
       name,
       email,
@@ -147,7 +156,7 @@ export default function RegisterPage() {
                 </label>
                 <input
                   type="text"
-                  placeholder={role === "STUDENT" ? "e.g. CSE-2022-045" : "e.g. D-105"}
+                  placeholder={role === "STUDENT" ? "e.g. 202204500123 (12 digits)" : "e.g. D-105"}
                   value={studentId}
                   onChange={(e) => setStudentId(e.target.value)}
                   className="w-full bg-slate-950/60 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none"

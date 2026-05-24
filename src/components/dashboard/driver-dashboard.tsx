@@ -150,7 +150,7 @@ export default function DriverDashboard({ user }: DriverDashboardProps) {
             <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
               CampusBus <span className="text-xs text-amber-500 px-2 py-0.5 bg-amber-500/10 rounded border border-amber-500/20 font-bold">Driver Console</span>
             </h1>
-            <p className="text-[10px] text-slate-400">University of Barishal</p>
+            <p className="text-[10px] text-slate-400">Bangladesh University</p>
           </div>
         </div>
 

@@ -96,7 +96,7 @@ export default function LandingPage({ buses, routes }: LandingPageProps) {
               <span className="text-xl font-black tracking-tight text-white flex items-center gap-2">
                 CampusBus
               </span>
-              <span className="text-[10px] text-slate-400 block tracking-widest uppercase font-mono">University of Barishal</span>
+              <span className="text-[10px] text-slate-400 block tracking-widest uppercase font-mono">Bangladesh University</span>
             </div>
           </div>
 
@@ -123,7 +123,7 @@ export default function LandingPage({ buses, routes }: LandingPageProps) {
             <svg className="w-4 h-4 text-[#D4AF37] fill-current" viewBox="0 0 24 24">
               <path d="M19 8c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm-3-2c-.6 0-1 .4-1 1s.4 1 1 1 1-.4 1-1-.4-1-1-1zm-6 2c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zM23 15c0 1.7-1.3 3-3 3h-1c-.6 0-1-.4-1-1s.4-1 1-1h1c.6 0 1-1.3 1-1v-2c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v2c0 .6.4 1 1 1h.5c.3 0 .5.2.5.5s-.2.5-.5.5H17c-.6 0-1-.4-1-1v-2.5c0-1.4-1.1-2.5-2.5-2.5h-5C8.1 11 7 12.1 7 13.5V16c0 .6-.4 1-1 1h.5c.3 0 .5.2.5.5s-.2.5-.5.5H5c-1.7 0-3-1.3-3-3v-7c0-1.7 1.3-3 3-3h15c1.7 0 3 1.3 3 3v7zM5 19c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm14 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
             </svg>
-            <span className="text-[10px] uppercase tracking-widest font-black text-[#D4AF37] font-mono">University of Barishal Transit Section</span>
+            <span className="text-[10px] uppercase tracking-widest font-black text-[#D4AF37] font-mono">Bangladesh University Transit Section</span>
           </div>
 
           <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white leading-tight">
@@ -135,7 +135,7 @@ export default function LandingPage({ buses, routes }: LandingPageProps) {
           </h1>
 
           <p className="text-sm md:text-base text-slate-400 max-w-2xl leading-relaxed">
-            Locate University of Barishal iconic yellow buses instantly on custom vector maps. Predict arrival sequences and verify live satellite coordinates directly on Google Maps.
+            Locate Bangladesh University iconic yellow buses instantly on custom vector maps. Predict arrival sequences and verify live satellite coordinates directly on Google Maps.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4">
@@ -276,7 +276,7 @@ export default function LandingPage({ buses, routes }: LandingPageProps) {
               <span className="text-xs uppercase tracking-widest text-[#D4AF37] font-bold block mb-1">Insignia Showcase</span>
               <h2 className="text-3xl md:text-4xl font-extrabold text-white">The BU Yellow Bus Fleet</h2>
               <p className="text-xs md:text-sm text-slate-400 mt-2 leading-relaxed">
-                The yellow double-deckers are the pride of the University of Barishal. Equipped with GPS coordinate trackers, they transport thousands of students across the city daily.
+                The yellow double-deckers are the pride of the Bangladesh University. Equipped with GPS coordinate trackers, they transport thousands of students across the city daily.
               </p>
             </div>
 
@@ -699,7 +699,7 @@ export default function LandingPage({ buses, routes }: LandingPageProps) {
             </p>
 
             <span className="text-[10px] text-slate-500 font-mono mt-2 block">
-              Issued by: Transport Section Office, University of Barishal (https://bu.edu.bd/)
+              Issued by: Transport Section Office, Bangladesh University (https://bu.edu.bd/)
             </span>
           </div>
         </div>
@@ -707,7 +707,7 @@ export default function LandingPage({ buses, routes }: LandingPageProps) {
 
       {/* Footer */}
       <footer className="py-10 text-center text-[10px] text-slate-500 border-t border-white/5 mt-auto bg-slate-950/40">
-        &copy; {new Date().getFullYear()} CampusBus • University of Barishal (BU) Commuter Portal. All rights reserved. <br />
+        &copy; {new Date().getFullYear()} CampusBus • Bangladesh University (BU) Commuter Portal. All rights reserved. <br />
         <a href="https://bu.edu.bd/" target="_blank" rel="noreferrer" className="hover:text-[#D4AF37] transition-colors mt-1 inline-block">
           bu.edu.bd
         </a>

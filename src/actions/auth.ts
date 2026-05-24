@@ -58,6 +58,12 @@ export async function registerUser(data: {
     return { error: "Please fill in all required fields" };
   }
 
+  if (role === "STUDENT") {
+    if (!studentId || studentId.length !== 12 || !/^\d+$/.test(studentId)) {
+      return { error: "Student ID must be exactly 12 numeric digits" };
+    }
+  }
+
   try {
     // Check if email already exists
     const existingUserByEmail = await prisma.user.findUnique({

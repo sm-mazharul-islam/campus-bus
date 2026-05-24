@@ -75,7 +75,7 @@ async function main() {
       password: "student123",
       name: "Sadia Islam",
       role: "STUDENT",
-      studentId: "CSE-2022-045",
+      studentId: "112233445566",
       department: "CSE",
       batch: "11th",
       busNumber: "Bus 12",
@@ -90,7 +90,7 @@ async function main() {
       password: "student123",
       name: "Rahim Ahmed",
       role: "STUDENT",
-      studentId: "BBA-2023-012",
+      studentId: "223344556677",
       department: "BBA",
       batch: "12th",
       busNumber: "Bus 07",
@@ -205,11 +205,11 @@ async function main() {
 
   console.log("Seeding default Boarding Records...");
   const records = [
-    { studentId: "CSE-2022-045", studentName: "Sadia Islam", busNumber: "Bus 12" },
-    { studentId: "BBA-2023-012", studentName: "Rahim Ahmed", busNumber: "Bus 07" },
-    { studentId: "CSE-2022-001", studentName: "Tareq Jamil", busNumber: "Bus 12" },
-    { studentId: "MATH-2021-008", studentName: "Rina Begum", busNumber: "Bus 12" },
-    { studentId: "PHY-2022-019", studentName: "Jamil Hossain", busNumber: "Bus 07" }
+    { studentId: "112233445566", studentName: "Sadia Islam", busNumber: "Bus 12" },
+    { studentId: "223344556677", studentName: "Rahim Ahmed", busNumber: "Bus 07" },
+    { studentId: "102030405060", studentName: "Tareq Jamil", busNumber: "Bus 12" },
+    { studentId: "203040506070", studentName: "Rina Begum", busNumber: "Bus 12" },
+    { studentId: "304050607080", studentName: "Jamil Hossain", busNumber: "Bus 07" }
   ];
 
   for (const r of records) {

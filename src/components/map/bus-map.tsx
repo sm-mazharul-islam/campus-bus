@@ -300,7 +300,7 @@ export default function BusMap({
         >
           <div className="bg-[#003087]/45 border border-[#D4AF37]/50 px-3 py-1.5 rounded-xl backdrop-blur-md">
             <span className="text-[9px] font-black tracking-widest text-[#D4AF37] uppercase block">
-              {isDhakaRoute ? "Dhaka Metro Transit" : "University of Barishal"}
+              {isDhakaRoute ? "Dhaka Metro Transit" : "Bangladesh University"}
             </span>
             <span className="text-[11px] text-white font-bold">
               {isDhakaRoute ? "Shahbagh Circle" : "Main Campus"}
