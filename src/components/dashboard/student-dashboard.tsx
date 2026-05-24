@@ -38,7 +38,7 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
   const [buses, setBuses] = useState<any[]>([]);
   const [routes, setRoutes] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
-  const [selectedBusNumber, setSelectedBusNumber] = useState<string | null>(null);
+  const [selectedBusNumber, setSelectedBusNumber] = useState<string | null>(user.busNumber || null);
   const [chatMessages, setChatMessages] = useState<Array<{ sender: "user" | "ai"; text: string }>>([
     { sender: "ai", text: "Hello! I am your CampusBus assistant. Ask me anything about bus schedules, stops, or active statuses." },
   ]);
