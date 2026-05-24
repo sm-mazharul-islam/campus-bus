@@ -46,7 +46,7 @@ export default function RegisterPage() {
       setError(res.error);
       setLoading(false);
     } else {
-      window.location.href = "/";
+      window.location.href = "/dashboard";
     }
   };
 

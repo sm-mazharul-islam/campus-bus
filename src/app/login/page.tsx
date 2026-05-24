@@ -56,8 +56,8 @@ function LoginForm() {
       setError(res.error);
       setLoading(false);
     } else {
-      // Refresh page to trigger active session routing in page.tsx
-      window.location.href = "/";
+      // Redirect directly to dashboard route
+      window.location.href = "/dashboard";
     }
   };
 
