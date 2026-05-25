@@ -28,6 +28,7 @@ import {
 import { getBuses, createBus, updateBus, deleteBus } from "@/actions/buses";
 import { getRoutes, createRoute, updateRoute, deleteRoute } from "@/actions/routes";
 import { createNotification } from "@/actions/notifications";
+import { getUsers, updateUserRole } from "@/actions/users";
 import { signOut } from "next-auth/react";
 import BusMap from "../map/bus-map";
 
@@ -40,9 +41,10 @@ interface AdminDashboardProps {
 }
 
 export default function AdminDashboard({ user }: AdminDashboardProps) {
-  const [activeSubTab, setActiveSubTab] = useState<"overview" | "buses" | "routes" | "notifications">("overview");
+  const [activeSubTab, setActiveSubTab] = useState<"overview" | "buses" | "routes" | "notifications" | "users">("overview");
   const [buses, setBuses] = useState<any[]>([]);
   const [routes, setRoutes] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
 
   // Bus form states
   const [newBusNumber, setNewBusNumber] = useState("");
@@ -69,6 +71,9 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
 
         const routeData = await getRoutes();
         setRoutes(routeData);
+
+        const userData = await getUsers();
+        setUsers(userData);
       } catch (e) {
         console.error(e);
       }
@@ -153,6 +158,18 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
     const res = await deleteRoute(id);
     if (res.success) {
       setRoutes((prev) => prev.filter((r) => r.id !== id));
+    }
+  };
+
+  const handleUpdateUserRole = async (userId: string, role: string) => {
+    const res = await updateUserRole(userId, role);
+    if (res.success) {
+      setUsers((prev) =>
+        prev.map((u) => (u.id === userId ? { ...u, role } : u))
+      );
+      alert(`User role updated to ${role} successfully!`);
+    } else {
+      alert(`Error updating role: ${res.error}`);
     }
   };
 
@@ -281,7 +298,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
 
         {/* Sub-tabs menu */}
         <div className="flex gap-2 border-b border-white/5 pb-2">
-          {(["overview", "buses", "routes", "notifications"] as const).map((tab) => (
+          {(["overview", "buses", "routes", "notifications", "users"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveSubTab(tab)}
@@ -291,7 +308,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                   : "text-slate-400 hover:text-white hover:bg-white/5"
               }`}
             >
-              {tab === "overview" ? "Analytics Overview" : tab}
+              {tab === "overview" ? "Analytics Overview" : tab === "users" ? "User Directory" : tab}
             </button>
           ))}
         </div>
@@ -606,6 +623,70 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                   <span>Success! Alert has been pushed to the Notification Center.</span>
                 </div>
               )}
+            </div>
+          )}
+
+          {activeSubTab === "users" && (
+            <div className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col gap-4">
+              <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                <div>
+                  <h3 className="font-bold text-white text-base">User Directory & Role Authority</h3>
+                  <p className="text-[10px] text-slate-400 mt-0.5">Manage registered campus users and promote driver or admin privileges</p>
+                </div>
+                <div className="text-xs text-slate-400 bg-slate-900 border border-white/5 px-3 py-1.5 rounded-xl">
+                  Total Accounts: <strong className="text-[#D4AF37]">{users.length}</strong>
+                </div>
+              </div>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b border-white/5 text-slate-400 font-semibold">
+                      <th className="pb-3 pr-2">Full Name</th>
+                      <th className="pb-3 pr-2">Email Address</th>
+                      <th className="pb-3 pr-2">Student / License ID</th>
+                      <th className="pb-3 pr-2">Department / Batch</th>
+                      <th className="pb-3 pr-2">Phone Number</th>
+                      <th className="pb-3 pr-2">System Role</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.map((u: any) => (
+                      <tr key={u.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                        <td className="py-3.5 pr-2 font-bold text-white flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#003087] to-[#D4AF37]/50 flex items-center justify-center font-bold text-white text-[10px]">
+                            {u.name.charAt(0)}
+                          </div>
+                          <span>{u.name}</span>
+                        </td>
+                        <td className="py-3.5 pr-2 text-slate-300">{u.email}</td>
+                        <td className="py-3.5 pr-2 font-mono text-[#D4AF37] font-semibold">{u.studentId || "N/A"}</td>
+                        <td className="py-3.5 pr-2 text-slate-400">
+                          {u.role === "STUDENT" ? `${u.department || ""} (${u.batch || ""})` : u.department || "N/A"}
+                        </td>
+                        <td className="py-3.5 pr-2 text-slate-400">{u.phone || "N/A"}</td>
+                        <td className="py-3.5 pr-2">
+                          <select
+                            value={u.role}
+                            onChange={(e) => handleUpdateUserRole(u.id, e.target.value)}
+                            className={`border rounded px-2.5 py-1 text-[10px] font-bold focus:outline-none transition-all duration-300 ${
+                              u.role === "ADMIN"
+                                ? "bg-red-500/10 text-red-400 border-red-500/30"
+                                : u.role === "DRIVER"
+                                ? "bg-amber-500/10 text-amber-400 border-amber-500/30"
+                                : "bg-blue-500/10 text-blue-400 border-blue-500/30"
+                            }`}
+                          >
+                            <option value="STUDENT" className="bg-slate-950 text-white">STUDENT</option>
+                            <option value="DRIVER" className="bg-slate-950 text-white">DRIVER</option>
+                            <option value="ADMIN" className="bg-slate-950 text-white">ADMIN</option>
+                          </select>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </div>
