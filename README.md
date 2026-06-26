@@ -93,9 +93,9 @@ We have pre-seeded test accounts for all roles with single-click auto-fill butto
 
 ## 🌎 Real-Time Telemetry Simulation Guide
 
-Verify the instant real-time notification double-chimes and map tracking systems side-by-side:
+Verify the instant real-time notification, double-chimes, and map tracking systems side-by-side:
 
-1. **Open two browser windows side-by-side** (e.g. one regular window and one Incognito/Private window) at `http://localhost:3000`.
+1. **Open two browser windows side-by-side** (e.g., one regular window and one Incognito/Private window) at `http://localhost:3000`.
 2. **In Window 1 (Student)**:
    - Click **Login Student Panel** (logs in as Sadia Islam).
    - In the sidebar, select **Bus 99 (Dhaka Test Route)**. The dynamic vector map auto-scales on Dhaka coordinates.
