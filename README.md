@@ -1,6 +1,6 @@
 # CampusBus | Real-Time University Transit Telemetry Ecosystem
 
-CampusBus is a premium, high-fidelity transit tracking and instant notification web application designed for university commuter systems. It features simulated live GPS telemetry stream, dynamic geographic maps scaling, real-time alerts with synthesized chimes, role-based developer playgrounds, and beautiful responsive analytics.
+CampusBus is a premium, high-fidelity transit tracking and instant notification web application designed for university commuter systems. It features simulated live GPS telemetry stream, dynamic geographic map scaling, real-time alerts with synthesized chimes, role-based developer playgrounds, and beautiful responsive analytics.
 
 The system runs entirely out of the box with **zero configuration** over a local SQLite database!
 
