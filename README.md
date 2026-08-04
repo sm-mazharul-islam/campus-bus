@@ -105,4 +105,4 @@ Verify the instant real-time notification, double-chimes, and map tracking syste
    - Watch **Window 1 (Student)** – the yellow bus icon representing Bus 99 will start smoothly gliding stop-to-stop in real-time.
 4. **Test SOS Alerts**:
    - In **Window 2 (Driver)**, click **🚨 SOS Emergency Alert**.
-   - Instantly in **Window 1 (Student)**, a dynamic audio double-chime will chime, a glowing **🚨 Live Alert Pushed** toast slides in, and the notification center counter updates automatically!
+   - Instantly in **Window 1 (Student)**, a dynamic audio double-chime will chime, a glowing **🚨 Live Alert Pushed** toast slides in, and the notification center counter updates automatically.
