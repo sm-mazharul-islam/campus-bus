@@ -74,7 +74,7 @@ Launch the local Next.js development server:
 npm run dev
 ```
 
-Open your browser at **[http://localhost:3000](http://localhost:3000)** to view the application!
+Open your browser at **[http://localhost:3000](http://localhost:3000)** to view the application.
 
 ---
 
